@@ -8,12 +8,10 @@ public class StopLineController : MonoBehaviour
     {
         if (other.tag == "Collecter")
         {
-            Debug.Log("DURR");
             GameController.GameStatusEnum = GameStatus.COUNT;
         }
         if (other.tag == "ToBeCollected")
         {
-            Debug.Log("FORCEEE");
             other.gameObject.GetComponent<Rigidbody>().AddForce(0, 0, 10f);
         }
     }

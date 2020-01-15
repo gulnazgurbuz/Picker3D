@@ -6,6 +6,8 @@ public class CollecterController : MonoBehaviour
 {
     private Vector3 screenPoint;
     private Vector3 offset;
+
+    [HideInInspector] public Transform WhichPocket;
     private void Start()
     {
 
@@ -43,5 +45,12 @@ public class CollecterController : MonoBehaviour
         transform.Translate(0, 0, 0.5f);
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, transform.position.z - 15);
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag=="StopLine")
+        {
+            WhichPocket = other.transform.parent;
+        }
+    }
 }
