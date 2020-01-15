@@ -7,6 +7,7 @@ TagManager:
   - StopLine
   - ToBeCollected
   - Collecter
+  - FinishFlag
   layers:
   - Default
   - TransparentFX
