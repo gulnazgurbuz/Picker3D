@@ -10,25 +10,34 @@ public class GameController : MonoBehaviour
 
     private PocketCounterController pckCounter;
     private CollecterController clctCounter;
+    private int _pocketindex = 1;
 
-   
+    private bool _pocketIndexIncreaseControl=false;
 
     private void Start()
     {
-        pckCounter = GameObject.Find("PocketCounter").GetComponent<PocketCounterController>();
+        pckCounter = GameObject.Find("Pocket" + _pocketindex).transform.Find("PocketCounter").GetComponent<PocketCounterController>();
         clctCounter = GameObject.Find("Collecter").GetComponent<CollecterController>();
-
-    }
+        GameStatusEnum=GameStatus.START;
+}
 
     private void Update()
     {
-        Debug.Log(GameStatusEnum);
+        Debug.Log("pocket index"+_pocketindex);
+
         switch (GameStatusEnum)
         {
-            case GameStatus.START:
+            case GameStatus.START:             
                 GameStatusEnum = GameStatus.STAY;
                 break;
             case GameStatus.STAY:
+                if (_pocketIndexIncreaseControl)
+                {
+                    _pocketIndexIncreaseControl = false;
+                    _pocketindex++;
+                    pckCounter = GameObject.Find("Pocket" + _pocketindex).transform.Find("PocketCounter").GetComponent<PocketCounterController>();
+                }
+
                 break;
             case GameStatus.COUNT:
                 DisplayCollectedObject();
@@ -36,8 +45,11 @@ public class GameController : MonoBehaviour
                 break;
             case GameStatus.RISING:
                 RisePlatform();
+             
                 break;
             case GameStatus.END:
+                _pocketIndexIncreaseControl = true;
+                GameStatusEnum = GameStatus.START;
                 break;
             default:
                 break;
@@ -48,7 +60,7 @@ public class GameController : MonoBehaviour
     private void DisplayCollectedObject()
     {
         int targetCount = pckCounter.TargetCount;
-        clctCounter.WhichPocket.transform.Find("Canvas").GetChild(0).GetComponent<Text>().text = pckCounter.ObjectCount+ "/" +targetCount;
+        clctCounter.WhichPocket.transform.Find("Canvas").GetChild(0).GetComponent<Text>().text = pckCounter.ObjectCount + "/" + targetCount;
     }
     private void CheckCount()
     {
@@ -60,12 +72,9 @@ public class GameController : MonoBehaviour
 
     private void RisePlatform()
     {
-       Vector3 currPos = pckCounter.transform.parent.Find("Plane").transform.position;
+        Vector3 currPos = pckCounter.transform.parent.Find("Plane").transform.position;
         pckCounter.transform.parent.Find("Plane").transform.position
-             = transform.MoveTovardsWEvent(currPos, new Vector3(currPos.x, 0, currPos.z), 0.1f);
-            //Vector3.MoveTowards(currPos, new Vector3(currPos.x, 0, currPos.z), 0.1f);
-       
-
+             = transform.MoveTovardsWithCheck(currPos, new Vector3(currPos.x, 0, currPos.z), 0.1f);
 
     }
 
@@ -78,6 +87,6 @@ public class GameController : MonoBehaviour
 
 public enum GameStatus
 {
-    START, STAY, COUNT,RISING, END
+    START, STAY, COUNT, RISING, END
 }
 
